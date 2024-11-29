@@ -102,7 +102,7 @@ keyboard_dict = {
     },
     "show_orders": {
         "keyboard": customers_nicks_keybord(),
-        "text": (gen_orders_msg(*get_orders()) + "\n\nВыбери пользователя заказ, которого ты хочешь обработать")
+        "text": (gen_orders_msg(*get_orders()) + "\n\nВыбери пользователя, заказ которого ты хочешь обработать")
     },
     "confirm_orders": {
         "keyboard": [],

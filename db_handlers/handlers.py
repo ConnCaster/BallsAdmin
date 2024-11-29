@@ -20,15 +20,42 @@ def get_customers():
 # def get_id_and_nicknames_from_DB():
 
 
-
 def get_orders():
     connection = sqlite3.Connection(get_db_path())
     cursor = connection.cursor()
-    s = cursor.execute(f"SELECT Orders.id, Orders.type, Common_Balls.type, Common_Balls.material, Common_Balls.color, Common_Balls.picture, Orders.amount , Common_Balls.price, Customers.nickname FROM Orders INNER JOIN Customers ON Orders.nickname = Customers.id INNER JOIN Common_Balls ON Orders.ball = Common_Balls.id")
+    s = cursor.execute(f"SELECT "
+                       f"Orders.id, "
+                       f"Orders.type, "
+                       f"Common_Balls.type, "
+                       f"Common_Balls.material, "
+                       f"Common_Balls.color, "
+                       f"Common_Balls.picture, "
+                       f"Orders.amount , "
+                       f"Orders.notes, "
+                       f"Common_Balls.price, "
+                       f"Customers.nickname "
+                       f"FROM Orders "
+                       f"INNER JOIN Customers ON Orders.nickname = Customers.id "
+                       f"INNER JOIN Common_Balls ON Orders.ball = Common_Balls.id")
     common_orders = s.fetchall()
-    s = cursor.execute(f"SELECT Orders.id, Orders.type, Shaped_Balls.type, Shaped_Balls.subtype,  Orders.amount , Shaped_Balls.price, Customers.nickname FROM Orders INNER JOIN Customers ON Orders.nickname = Customers.id INNER JOIN Shaped_Balls ON Orders.ball = Shaped_Balls.id AND Orders.type = 'shaped'")
+    s = cursor.execute(f"SELECT "
+                       f"Orders.id, "
+                       f"Orders.type, "
+                       f"Shaped_Balls.type, "
+                       f"Shaped_Balls.subtype, "
+                       f"Orders.amount, "
+                       f"Orders.notes, "
+                       f"Shaped_Balls.price, "
+                       f"Customers.nickname "
+                       f"FROM Orders "
+                       f"INNER JOIN Customers ON Orders.nickname = Customers.id "
+                       f"INNER JOIN Shaped_Balls ON Orders.ball = Shaped_Balls.id AND Orders.type = 'shaped'")
     shaped_orders = s.fetchall()
-    s = cursor.execute(f"SELECT amount, Customers.nickname FROM Orders INNER JOIN Customers ON Orders.nickname = Customers.id AND orders.type = 'Blow up'")
+    s = cursor.execute(f"SELECT "
+                       f"amount, "
+                       f"Customers.nickname "
+                       f"FROM Orders "
+                       f"INNER JOIN Customers ON Orders.nickname = Customers.id AND orders.type = 'Blow up'")
     blowup_orders = s.fetchall()
     connection.close()
     return common_orders, shaped_orders, blowup_orders
