@@ -9,6 +9,7 @@ sys.path.append("../")
 from db_handlers.handlers import *
 from third_party.picture_redactor import *
 from third_party.ops import *
+from  balls_admin import Orders
 
 
 async def cart(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -159,44 +160,46 @@ async def back(query, context):
 
 
 async def show_orders(query):
-    dict_of_nicks = dict(get_id_and_nicknames_from_DB())
-    #TODO Получить список путей к картинкам всех заказанных шариков
-    ordered_common_balls_info = get_ordered_common_balls_from_DB(dict_of_nicks[nickname])
-    ordered_shaped_balls_info = get_ordered_shaped_balls_from_DB(dict_of_nicks[nickname])
+    orders = Orders()
 
-    common_pictures_paths = [i[3] for i in ordered_common_balls_info]
-    for i in range(len(common_pictures_paths)):
-        common_pictures_paths[i] = gen_picture_path(common_pictures_paths[i], balloon_type="common")
-    shaped_pictures_paths = [i[2] for i in ordered_shaped_balls_info]
-    for i in range(len(shaped_pictures_paths)):
-        shaped_pictures_paths[i] = gen_picture_path(shaped_pictures_paths[i], balloon_type="shaped")
-
-    pictures_paths = common_pictures_paths + shaped_pictures_paths
-    chat_id = update.effective_chat.id
-    i = 1
-    list_of_media = []
-    media_per_msg = []
-    for path in pictures_paths:
-        trash_path = add_sign_to_picture_and_save_to_trash(path, "[" + str(i) + "]")
-        with open(trash_path, 'rb') as file:
-            media_per_msg.append(InputMediaPhoto(file))
-            i += 1
-        if i % 10 == 0:
-            list_of_media.append(media_per_msg)
-            media_per_msg = []
-    if i % 10 != 0:
-        list_of_media.append(media_per_msg)
-        media_per_msg = []
-
-    for msg in list_of_media:
-        await context.bot.send_media_group(chat_id, msg)
-    path_to_trash_dir = remove_last_segment_in_path(trash_path)
-    trash_files_names = os.listdir(path_to_trash_dir)
-    for file_name in trash_files_names:
-        os.remove(os.path.join(path_to_trash_dir, file_name))
-
-    ordered_own_balls_info = get_own_shaped_balls_from_DB(dict_of_nicks[nickname])
-    text = gen_cart_msg(ordered_common_balls_info, ordered_shaped_balls_info, ordered_own_balls_info)
+    # dict_of_nicks = dict(get_customers())
+    # #TODO Получить список путей к картинкам всех заказанных шариков
+    # ordered_common_balls_info = get_ordered_common_balls_from_DB(dict_of_nicks[nickname])
+    # ordered_shaped_balls_info = get_ordered_shaped_balls_from_DB(dict_of_nicks[nickname])
+    #
+    # common_pictures_paths = [i[3] for i in ordered_common_balls_info]
+    # for i in range(len(common_pictures_paths)):
+    #     common_pictures_paths[i] = gen_picture_path(common_pictures_paths[i], balloon_type="common")
+    # shaped_pictures_paths = [i[2] for i in ordered_shaped_balls_info]
+    # for i in range(len(shaped_pictures_paths)):
+    #     shaped_pictures_paths[i] = gen_picture_path(shaped_pictures_paths[i], balloon_type="shaped")
+    #
+    # pictures_paths = common_pictures_paths + shaped_pictures_paths
+    # chat_id = update.effective_chat.id
+    # i = 1
+    # list_of_media = []
+    # media_per_msg = []
+    # for path in pictures_paths:
+    #     trash_path = add_sign_to_picture_and_save_to_trash(path, "[" + str(i) + "]")
+    #     with open(trash_path, 'rb') as file:
+    #         media_per_msg.append(InputMediaPhoto(file))
+    #         i += 1
+    #     if i % 10 == 0:
+    #         list_of_media.append(media_per_msg)
+    #         media_per_msg = []
+    # if i % 10 != 0:
+    #     list_of_media.append(media_per_msg)
+    #     media_per_msg = []
+    #
+    # for msg in list_of_media:
+    #     await context.bot.send_media_group(chat_id, msg)
+    # path_to_trash_dir = remove_last_segment_in_path(trash_path)
+    # trash_files_names = os.listdir(path_to_trash_dir)
+    # for file_name in trash_files_names:
+    #     os.remove(os.path.join(path_to_trash_dir, file_name))
+    #
+    # ordered_own_balls_info = get_own_shaped_balls_from_DB(dict_of_nicks[nickname])
+    # text = gen_cart_msg(ordered_common_balls_info, ordered_shaped_balls_info, ordered_own_balls_info)
 
 
     keyboard_level = "show_orders"

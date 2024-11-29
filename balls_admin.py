@@ -26,15 +26,17 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     elif query.data == 'delete_item':
         pass
 
+# TODO: class BALL
 
 class Order:
-    def __init__(self, id, ball, type, amount, nick, status):
+    def __init__(self, id, ball, type, amount, nick, status, notes):
         self.id = id
         self.ball = ball
         self.type = type
         self.amount = amount
         self.nick = nick
-        self.status = status
+        self.status = status  # paid/not paid
+        self.notes = notes
 
     def change_status(self, status, ball_id):
         config = configparser.ConfigParser()
@@ -52,7 +54,23 @@ class Order:
         connection.close()
 
 
+class Orders:
+    def __init__(self):
+        self.path = get_db_path()
+        self.orders = {"common": [], "shaped": [], "blowup": []}
+        self.__get_orders_from_db()
 
+    def __get_orders_from_db(self):
+        common_orders, shaped_orders, blowup_orders = get_orders()
+        for order_tuple in common_orders:
+            order = Order(*order_tuple) # (1, 'common', 'Hello, Kitty', 'latex', 'black', 'hello_kitty_black.jpg', 1, 65, '@akuda0')
+            self.orders["common"].append(order)
+        for order_tuple in shaped_orders:
+            order = Order(*order_tuple)
+            self.orders["shaped"].append(order)
+        for order_tuple in blowup_orders:
+            order = Order(*order_tuple)
+            self.orders["blowup"].append(order)
 
 
 def main():
@@ -63,7 +81,6 @@ def main():
     # application.add_handler(MessageHandler(filters.Regex("^\d+$"),order_registrar))  # MessageHandler(filters.Regex("^(Boy|Girl|Other)$")
     application.run_polling()
     application.start()
-
 
 
 if __name__ == "__main__":

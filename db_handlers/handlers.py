@@ -1,21 +1,12 @@
 import sqlite3
 import os
 import sys
+
+from third_party.ops import *
+
 sys.path.append("../")
 from third_party.ops import gen_picture_path
-import configparser
-
-
-def get_db_path():
-    config = configparser.ConfigParser()
-    if os.getcwd().endswith("db_handlers"):
-        path_to_config = os.path.join("..", "config", "cfg_file.ini")
-    else:
-        path_to_config = os.path.join("config", "cfg_file.ini")
-    with open(path_to_config) as cfg_file:
-        config.read_file(cfg_file)
-        db_path = config["admin.db"]["db_path"]
-    return db_path
+import configparse
 
 
 def get_customers():

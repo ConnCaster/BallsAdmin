@@ -2,6 +2,18 @@ import os
 import configparser
 
 
+def get_db_path():
+    config = configparser.ConfigParser()
+    if os.getcwd().endswith("db_handlers"):
+        path_to_config = os.path.join("..", "config", "cfg_file.ini")
+    else:
+        path_to_config = os.path.join("config", "cfg_file.ini")
+    with open(path_to_config) as cfg_file:
+        config.read_file(cfg_file)
+        db_path = config["admin.db"]["db_path"]
+    return db_path
+
+
 def parse_pic_name_from_query_data(query_data, shape):
     if "]=[" not in query_data:
         return query_data
