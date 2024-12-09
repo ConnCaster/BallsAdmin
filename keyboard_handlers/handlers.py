@@ -158,12 +158,13 @@ async def back(query, context):
                                   reply_markup=InlineKeyboardMarkup(keyboard_dict[keyboard_level]['keyboard']))
 
 
-
 async def show_orders(query):
     orders = Orders()
+    print(orders.orders["common"])
+
 
     # dict_of_nicks = dict(get_customers())
-    # #TODO Получить список путей к картинкам всех заказанных шариков
+    #TODO Получить список путей к картинкам всех заказанных шариков
     # ordered_common_balls_info = get_ordered_common_balls_from_DB(dict_of_nicks[nickname])
     # ordered_shaped_balls_info = get_ordered_shaped_balls_from_DB(dict_of_nicks[nickname])
     #

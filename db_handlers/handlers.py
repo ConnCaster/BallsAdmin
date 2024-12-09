@@ -20,8 +20,10 @@ def get_customers():
 # def get_id_and_nicknames_from_DB():
 
 
-def get_orders():
-    connection = sqlite3.Connection(get_db_path())
+def get_orders(db_path: str = ""):
+    if not db_path:
+        db_path = get_db_path()
+    connection = sqlite3.Connection(db_path)
     cursor = connection.cursor()
     s = cursor.execute(f"SELECT "
                        f"Orders.id, "
@@ -30,10 +32,10 @@ def get_orders():
                        f"Common_Balls.material, "
                        f"Common_Balls.color, "
                        f"Common_Balls.picture, "
-                       f"Orders.amount , "
-                       f"Orders.notes, "
+                       f"Orders.amount, "
                        f"Common_Balls.price, "
-                       f"Customers.nickname "
+                       f"Customers.nickname, "
+                       f"Orders.notes "
                        f"FROM Orders "
                        f"INNER JOIN Customers ON Orders.nickname = Customers.id "
                        f"INNER JOIN Common_Balls ON Orders.ball = Common_Balls.id")
@@ -44,9 +46,9 @@ def get_orders():
                        f"Shaped_Balls.type, "
                        f"Shaped_Balls.subtype, "
                        f"Orders.amount, "
-                       f"Orders.notes, "
                        f"Shaped_Balls.price, "
-                       f"Customers.nickname "
+                       f"Customers.nickname, "
+                       f"Orders.notes "
                        f"FROM Orders "
                        f"INNER JOIN Customers ON Orders.nickname = Customers.id "
                        f"INNER JOIN Shaped_Balls ON Orders.ball = Shaped_Balls.id AND Orders.type = 'shaped'")

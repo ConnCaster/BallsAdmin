@@ -33,7 +33,7 @@ def gen_picture_path(filename: str, balloon_type="shaped"):
     if not cwd.endswith("/balls_seller"):
         cwd = os.path.join(cwd, "balls_seller")
     cfg_path = os.path.join(cwd, "config")
-    cfg_path = os.path.join(cfg_path, "config.ini")
+    cfg_path = os.path.join(cfg_path, "cfg_file.ini")
     with open(cfg_path) as cfg_file:
         config.read_file(cfg_file)
         pictures_dir_path = os.path.join(cwd, config["balloon.pictures"]["pictures_dirname"])

@@ -26,16 +26,43 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     elif query.data == 'delete_item':
         pass
 
-# TODO: class BALL
+
+class Ball:
+    def __init__(self, id, type, picture, amount=-1, price=-1):
+        self.id = id
+        self.type = type
+        self.picture = picture
+        self.amount = amount
+        self.price = price
+
+
+class CommonBall(Ball):
+    Fields = ['id', 'ball_type', 'common_ball_type', 'material', 'color', 'picture', 'amount', 'price', 'nickname', 'notes']
+
+    def __init__(self, id, type, material, color, picture, amount=-1, price=-1):
+        super().__init__(id, type, picture, amount, price)
+        self.material = material
+        self.color = color
+
+
+class ShapedBall(Ball):
+    def __init__(self, id, type, subtype, picture, amount=-1, price=-1):
+        super().__init__(id, type, picture, amount, price)
+        self.subtype = subtype
+
 
 class Order:
-    def __init__(self, id, ball, type, amount, nick, status, notes):
+    Fields = ['id', 'ball_type', 'amount', 'nickname', 'status', 'notes']
+
+    def __init__(self, id: int, ball: Ball, type: str, amount: int, nick: str, notes: str):
+        # E.g.: (1, 'common', 'Hello, Kitty', 'latex', 'black', 'hello_kitty_black.jpg', 1, 65, '@akuda0')
         self.id = id
         self.ball = ball
         self.type = type
         self.amount = amount
         self.nick = nick
-        self.status = status  # paid/not paid
+        #TODO: добавить извлечение статуса заказа из БД
+        # self.status = status  # paid/not paid
         self.notes = notes
 
     def change_status(self, status, ball_id):
@@ -57,20 +84,37 @@ class Order:
 class Orders:
     def __init__(self):
         self.path = get_db_path()
+        # TODO: blow up - создать отдельный класс для этого вида заказа
         self.orders = {"common": [], "shaped": [], "blowup": []}
         self.__get_orders_from_db()
 
     def __get_orders_from_db(self):
-        common_orders, shaped_orders, blowup_orders = get_orders()
+        common_orders, shaped_orders, blowup_orders = get_orders(self.path)
         for order_tuple in common_orders:
-            order = Order(*order_tuple) # (1, 'common', 'Hello, Kitty', 'latex', 'black', 'hello_kitty_black.jpg', 1, 65, '@akuda0')
+            common_ball_fields = dict(zip(CommonBall.Fields, order_tuple))
+            ball = CommonBall(-1,
+                              common_ball_fields['common_ball_type'],
+                              common_ball_fields['material'],
+                              common_ball_fields['color'],
+                              common_ball_fields['picture'],
+                              common_ball_fields['amount'],
+                              common_ball_fields['price'])
+            order_fields = dict(zip(Order.Fields, list(order_tuple[1]) + list(order_tuple[6:])))
+            order = Order(order_fields['id'],
+                          ball,
+                          order_fields['ball_type'],
+                          order_fields['amount'],
+                          order_fields['nickname'],
+                          order_fields['notes'])
             self.orders["common"].append(order)
         for order_tuple in shaped_orders:
-            order = Order(*order_tuple)
-            self.orders["shaped"].append(order)
+            pass
+            # order = Order(*order_tuple)
+            # self.orders["shaped"].append(order)
         for order_tuple in blowup_orders:
-            order = Order(*order_tuple)
-            self.orders["blowup"].append(order)
+            pass
+            # order = Order(*order_tuple)
+            # self.orders["blowup"].append(order)
 
 
 def main():
