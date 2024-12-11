@@ -38,7 +38,7 @@ def get_orders(db_path: str = ""):
                        f"Orders.notes "
                        f"FROM Orders "
                        f"INNER JOIN Customers ON Orders.nickname = Customers.id "
-                       f"INNER JOIN Common_Balls ON Orders.ball = Common_Balls.id")
+                       f"INNER JOIN Common_Balls ON Orders.ball = Common_Balls.id AND Orders.type = 'common'")
     common_orders = s.fetchall()
     s = cursor.execute(f"SELECT "
                        f"Orders.id, "

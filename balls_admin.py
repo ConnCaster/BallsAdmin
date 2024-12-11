@@ -52,7 +52,7 @@ class ShapedBall(Ball):
 
 
 class Order:
-    Fields = ['id', 'ball_type', 'amount', 'nickname', 'status', 'notes']
+    Fields = ['id', 'ball_type', 'amount', 'nickname', 'notes']  #TODO: Добавить status перед notes
 
     def __init__(self, id: int, ball: Ball, type: str, amount: int, nick: str, notes: str):
         # E.g.: (1, 'common', 'Hello, Kitty', 'latex', 'black', 'hello_kitty_black.jpg', 1, 65, '@akuda0')
@@ -99,7 +99,7 @@ class Orders:
                               common_ball_fields['picture'],
                               common_ball_fields['amount'],
                               common_ball_fields['price'])
-            order_fields = dict(zip(Order.Fields, list(order_tuple[1]) + list(order_tuple[6:])))
+            order_fields = dict(zip(Order.Fields, list(order_tuple[0:2]) + [order_tuple[6]] + list(order_tuple[8:])))
             order = Order(order_fields['id'],
                           ball,
                           order_fields['ball_type'],
@@ -116,6 +116,28 @@ class Orders:
             # order = Order(*order_tuple)
             # self.orders["blowup"].append(order)
 
+    def gen_orders_msg(self):
+        all_orders = ""
+        counter = 0
+
+        if self.orders["common"]:
+            counter = 0
+            for order in self.orders["common"]:
+                all_orders += (f"[{counter+1}] -- заказано {order.amount} шт, "
+                               f"итоговая стоимость - {order.amount * order.ball.price}₽ ({order.nick})\n")
+                counter += 1
+
+        # if self.orders["shaped"]:
+        #     counter = 0
+        #     for i in range(len(self.orders["shaped"])):
+        #         all_orders += (f"[{i + len(self.orders["shaped"]) + 1}] -- заказано {self.orders["shaped"][i][4]} шт, "
+        #                        f"итоговая стоимость - {self.orders["shaped"][i][4] * self.orders["shaped"][i][5]}₽ ({self.orders["shaped"][i][6]})\n")
+        #         counter += 1
+
+        if self.orders["blowup"]:
+            all_orders += f"\nСвоих шариков заказано: {sum(list(map(lambda x: x[0], self.orders["blowup"])))} шт"
+
+        return str(all_orders)
 
 def main():
     application = Application.builder().token("6875313175:AAHB0_46knn6bf4iapEGYVKkcTxBSeCz8pk").build()

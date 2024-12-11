@@ -57,24 +57,6 @@ async def cart(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 + text, parse_mode="Markdown")
 
 
-def gen_orders_msg(common_orders=None, shaped_orders=None, own_orders=None):
-    all_orders = ""
-
-    if common_orders:
-        for i in range(len(common_orders)):
-            all_orders += (f"[{i+1}] -- заказано {common_orders[i][6]} шт, "
-                           f"итоговая стоимость - {common_orders[i][6] * common_orders[i][7]}₽ ({common_orders[i][8]})\n")
-    if shaped_orders:
-        for i in range(len(shaped_orders)):
-            all_orders += (f"[{i + len(common_orders) + 1}] -- заказано {shaped_orders[i][4]} шт, "
-                           f"итоговая стоимость - {shaped_orders[i][4] * shaped_orders[i][5]}₽ ({shaped_orders[i][6]})\n")
-
-    if own_orders:
-        all_orders += f"\nСвоих шариков заказано: {sum(list(map(lambda x: x[0], own_orders)))} шт"
-
-    return str(all_orders)
-
-
 def customers_nicks_keybord():
     all_nicks = set()
     keyboard = [[]]
@@ -102,7 +84,7 @@ keyboard_dict = {
     },
     "show_orders": {
         "keyboard": customers_nicks_keybord(),
-        "text": (gen_orders_msg(*get_orders()) + "\n\nВыбери пользователя, заказ которого ты хочешь обработать")
+        "text": (Orders().gen_orders_msg() + "\n\nВыбери пользователя, заказ которого ты хочешь обработать")
     },
     "confirm_orders": {
         "keyboard": [],
@@ -159,10 +141,6 @@ async def back(query, context):
 
 
 async def show_orders(query):
-    orders = Orders()
-    print(orders.orders["common"])
-
-
     # dict_of_nicks = dict(get_customers())
     #TODO Получить список путей к картинкам всех заказанных шариков
     # ordered_common_balls_info = get_ordered_common_balls_from_DB(dict_of_nicks[nickname])
@@ -201,8 +179,6 @@ async def show_orders(query):
     #
     # ordered_own_balls_info = get_own_shaped_balls_from_DB(dict_of_nicks[nickname])
     # text = gen_cart_msg(ordered_common_balls_info, ordered_shaped_balls_info, ordered_own_balls_info)
-
-
     keyboard_level = "show_orders"
     text = keyboard_dict[keyboard_level]['text']
     reply_markup = InlineKeyboardMarkup(keyboard_dict[keyboard_level]['keyboard'])
@@ -239,4 +215,4 @@ async def delete_item(update: Update):
 
 
 if __name__ == "__main__":
-    print(gen_orders_msg(*get_orders()))
+    pass
