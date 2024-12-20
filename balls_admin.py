@@ -83,6 +83,9 @@ class Order:
 
 class Orders:
     def __init__(self):
+        """
+        self.orders - главный контейнер со всеми заказами !!!
+        """
         self.path = get_db_path()
         # TODO: blow up - создать отдельный класс для этого вида заказа
         self.orders = {"common": [], "shaped": [], "blowup": []}

@@ -55,7 +55,8 @@ def get_orders(db_path: str = ""):
     shaped_orders = s.fetchall()
     s = cursor.execute(f"SELECT "
                        f"amount, "
-                       f"Customers.nickname "
+                       f"Customers.nickname, "
+                       f"Orders.notes "
                        f"FROM Orders "
                        f"INNER JOIN Customers ON Orders.nickname = Customers.id AND orders.type = 'Blow up'")
     blowup_orders = s.fetchall()

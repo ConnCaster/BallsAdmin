@@ -57,14 +57,13 @@ async def cart(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 + text, parse_mode="Markdown")
 
 
-def customers_nicks_keybord():
+def customers_nicks_keyboard():
     all_nicks = set()
     keyboard = [[]]
-
-    for types in get_orders():
-        if types:
-            for l in types:
-                all_nicks.add(l[-1])
+    orders = Orders()
+    for ball_type in orders.orders.keys():
+        for order in orders.orders[ball_type]:
+            all_nicks.add(order.nick)
 
     for nick in all_nicks:
         keyboard[0].append(InlineKeyboardButton(nick, callback_data="confirm_orders"))
@@ -83,8 +82,8 @@ keyboard_dict = {
         "text": "Привет, я Balooadmin. С моей помощью ты можешь управлять заказами и каталогом шариков"
     },
     "show_orders": {
-        "keyboard": customers_nicks_keybord(),
-        "text": (Orders().gen_orders_msg() + "\n\nВыбери пользователя, заказ которого ты хочешь обработать")
+        "keyboard": customers_nicks_keyboard(),
+        "text": Orders().gen_orders_msg() + "\n\nВыбери пользователя, заказ которого ты хочешь обработать"
     },
     "confirm_orders": {
         "keyboard": [],
@@ -116,14 +115,6 @@ keyboard_dict = {
         #TODO решить в какой форме сделать пополнение: по окну на параметр или задавать все параметры в одном сообщении
     }
 }
-
-#   "": {
-#       "keyboard": [
-#
-#       ],
-#       "text": ""
-#   },
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard_level = "start"
