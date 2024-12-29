@@ -171,6 +171,8 @@ async def show_orders(query):
     # ordered_own_balls_info = get_own_shaped_balls_from_DB(dict_of_nicks[nickname])
     # text = gen_cart_msg(ordered_common_balls_info, ordered_shaped_balls_info, ordered_own_balls_info)
     keyboard_level = "show_orders"
+    #TODO: сделать обновление клавиатуры перед отрисовкой, а то не меняются поля
+    #TODO: проверить в Seller: выкупить все шарики и посмотреть, изменится ли клавиатура
     text = keyboard_dict[keyboard_level]['text']
     reply_markup = InlineKeyboardMarkup(keyboard_dict[keyboard_level]['keyboard'])
     await query.edit_message_text(text, reply_markup=reply_markup)

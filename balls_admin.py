@@ -46,6 +46,8 @@ class CommonBall(Ball):
 
 
 class ShapedBall(Ball):
+    Fields = ['id', 'ball_type', 'shaped_ball_type', 'subtype', 'picture', 'amount', 'price', 'nickname', 'notes']
+
     def __init__(self, id, type, subtype, picture, amount=-1, price=-1):
         super().__init__(id, type, picture, amount, price)
         self.subtype = subtype
@@ -53,7 +55,6 @@ class ShapedBall(Ball):
 
 class Order:
     Fields = ['id', 'ball_type', 'amount', 'nickname', 'notes']  #TODO: Добавить status перед notes
-
     def __init__(self, id: int, ball: Ball, type: str, amount: int, nick: str, notes: str):
         # E.g.: (1, 'common', 'Hello, Kitty', 'latex', 'black', 'hello_kitty_black.jpg', 1, 65, '@akuda0')
         self.id = id
@@ -111,9 +112,21 @@ class Orders:
                           order_fields['notes'])
             self.orders["common"].append(order)
         for order_tuple in shaped_orders:
-            pass
-            # order = Order(*order_tuple)
-            # self.orders["shaped"].append(order)
+            shaped_ball_fields = dict(zip(ShapedBall.Fields, order_tuple))
+            ball = ShapedBall(-1,
+                              shaped_ball_fields['shaped_ball_type'],
+                              shaped_ball_fields['subtype'],
+                              shaped_ball_fields['picture'],
+                              shaped_ball_fields['amount'],
+                              shaped_ball_fields['price'])
+            order_fields = dict(zip(Order.Fields, list(order_tuple[0:2]) + [order_tuple[5]] + list(order_tuple[7:])))
+            order = Order(order_fields['id'],
+                          ball,
+                          order_fields['ball_type'],
+                          order_fields['amount'],
+                          order_fields['nickname'],
+                          order_fields['notes'])
+            self.orders["shaped"].append(order)
         for order_tuple in blowup_orders:
             pass
             # order = Order(*order_tuple)
@@ -123,6 +136,7 @@ class Orders:
         all_orders = ""
         counter = 0
 
+        all_orders += "Обычные шарики:\n"
         if self.orders["common"]:
             counter = 0
             for order in self.orders["common"]:
@@ -130,12 +144,13 @@ class Orders:
                                f"итоговая стоимость - {order.amount * order.ball.price}₽ ({order.nick})\n")
                 counter += 1
 
-        # if self.orders["shaped"]:
-        #     counter = 0
-        #     for i in range(len(self.orders["shaped"])):
-        #         all_orders += (f"[{i + len(self.orders["shaped"]) + 1}] -- заказано {self.orders["shaped"][i][4]} шт, "
-        #                        f"итоговая стоимость - {self.orders["shaped"][i][4] * self.orders["shaped"][i][5]}₽ ({self.orders["shaped"][i][6]})\n")
-        #         counter += 1
+        all_orders += "\nФигурные шарики:\n"
+        if self.orders["shaped"]:
+            counter = 0
+            for order in self.orders["shaped"]:
+                all_orders += (f"[{counter+1}] -- заказано {order.amount} шт, "
+                               f"итоговая стоимость - {order.amount * order.ball.price}₽ ({order.nick})\n")
+                counter += 1
 
         if self.orders["blowup"]:
             all_orders += f"\nСвоих шариков заказано: {sum(list(map(lambda x: x[0], self.orders["blowup"])))} шт"

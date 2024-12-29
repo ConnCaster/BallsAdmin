@@ -45,6 +45,7 @@ def get_orders(db_path: str = ""):
                        f"Orders.type, "
                        f"Shaped_Balls.type, "
                        f"Shaped_Balls.subtype, "
+                       f"Shaped_Balls.picture, "
                        f"Orders.amount, "
                        f"Shaped_Balls.price, "
                        f"Customers.nickname, "
