@@ -55,10 +55,13 @@ def get_orders(db_path: str = ""):
                        f"INNER JOIN Shaped_Balls ON Orders.ball = Shaped_Balls.id AND Orders.type = 'shaped'")
     shaped_orders = s.fetchall()
     s = cursor.execute(f"SELECT "
-                       f"amount, "
+                       f"Orders.id, "
+                       f"Orders.type, "
+                       f"Orders.amount, "
+                       f"BlowUp_Balls.price, "
                        f"Customers.nickname, "
                        f"Orders.notes "
-                       f"FROM Orders "
+                       f"FROM Orders, BlowUp_Balls "
                        f"INNER JOIN Customers ON Orders.nickname = Customers.id AND orders.type = 'Blow up'")
     blowup_orders = s.fetchall()
     connection.close()

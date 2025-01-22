@@ -53,6 +53,13 @@ class ShapedBall(Ball):
         self.subtype = subtype
 
 
+class BlowUpBall(Ball):
+    Fields = ['id', 'ball_type', 'amount', 'price', 'nickname', 'notes']
+
+    def __init__(self, id=0, amount=-1, price=-1):
+        super().__init__(id, "", "", amount, price)
+
+
 class Order:
     Fields = ['id', 'ball_type', 'amount', 'nickname', 'notes']  #TODO: Добавить status перед notes
     def __init__(self, id: int, ball: Ball, type: str, amount: int, nick: str, notes: str):
@@ -128,9 +135,16 @@ class Orders:
                           order_fields['notes'])
             self.orders["shaped"].append(order)
         for order_tuple in blowup_orders:
-            pass
-            # order = Order(*order_tuple)
-            # self.orders["blowup"].append(order)
+            blowup_balls_fields = dict(zip(BlowUpBall.Fields, order_tuple))
+            ball = BlowUpBall(-1, price=blowup_balls_fields['price'])
+            order_fields = dict(zip(Order.Fields, list(order_tuple[0:3]) + list(order_tuple[4:6])))
+            order = Order(order_fields['id'],
+                          ball,
+                          order_fields['ball_type'],
+                          order_fields['amount'],
+                          order_fields['nickname'],
+                          order_fields['notes'])
+            self.orders["blowup"].append(order)
 
     def gen_orders_msg(self):
         all_orders = ""
@@ -152,8 +166,13 @@ class Orders:
                                f"итоговая стоимость - {order.amount * order.ball.price}₽ ({order.nick})\n")
                 counter += 1
 
+        all_orders += "\nНадуть шарики:\n"
         if self.orders["blowup"]:
-            all_orders += f"\nСвоих шариков заказано: {sum(list(map(lambda x: x[0], self.orders["blowup"])))} шт"
+            counter = 0
+            for order in self.orders["blowup"]:
+                all_orders += (f"[{counter+1}] -- заказано {order.amount} шт, "
+                                   f"итоговая стоимость - {order.amount * order.ball.price}₽ ({order.nick})\n")
+                counter += 1
 
         return str(all_orders)
 
